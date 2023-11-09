@@ -17,38 +17,31 @@
       integrity="sha256-o9N1jGDZrf5tS+Ft4gbIK7mYMipq9lqpVJ91xHSyKhg="
       crossorigin=""
     ></script>
-    <script src="location.js"></script>
     <style>
       #map {
         height: 400px;
-      }
-      #linkContainer {
-        margin-top: 10px;
-        font-size: 14px;
       }
     </style>
   </head>
   <body>
     <div id="map"></div>
-    <div id="linkContainer"></div>
 
     <script>
-      // Call the initializeMap function from location.js
-      initializeMap();
+      const map = L.map("map").setView([0, 0], 2);
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(
+        map
+      );
 
       // Get the latitude and longitude values from the URL parameters
       const params = new URLSearchParams(window.location.search);
       const sharedLatitude = params.get("lat");
       const sharedLongitude = params.get("lng");
 
-      // Call functions from location.js to center the map and add a marker
-      centerMap(sharedLatitude, sharedLongitude);
-      addMarker(sharedLatitude, sharedLongitude);
+      // Center the map on the shared location
+      map.setView([sharedLatitude, sharedLongitude], 13);
 
-      // Display the link
-      const linkContainer = document.getElementById("linkContainer");
-      const shareLink = window.location.href;
-      linkContainer.innerHTML = `Share this link with others: <strong>${shareLink}</strong>`;
+      // Add a marker for the shared location
+      const marker = L.marker([sharedLatitude, sharedLongitude]).addTo(map);
     </script>
   </body>
 </html>

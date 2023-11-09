@@ -17,7 +17,6 @@
       integrity="sha256-o9N1jGDZrf5tS+Ft4gbIK7mYMipq9lqpVJ91xHSyKhg="
       crossorigin=""
     ></script>
-    <script src="location.js"></script>
     <style>
       #map {
         height: 400px;
@@ -26,24 +25,48 @@
   </head>
   <body>
     <div id="map"></div>
-    <button id="shareLocation">Start Sharing My Location</button>
-    <button id="stopSharing">Stop Sharing</button>
+    <button id="shareLocation">Share My Location</button>
 
     <script>
-      let watchId;
+      const map = L.map("map").setView([0, 0], 2);
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(
+        map
+      );
+
+      let marker;
 
       const shareLocationBtn = document.getElementById("shareLocation");
-      const stopSharingBtn = document.getElementById("stopSharing");
+      shareLocationBtn.addEventListener("click", shareMyLocation);
 
-      shareLocationBtn.addEventListener("click", () => {
-        // Call the shareLocation function from location.js
-        watchId = shareLocation();
-      });
+      function shareMyLocation() {
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            const { latitude, longitude } = pos.coords;
 
-      stopSharingBtn.addEventListener("click", () => {
-        // Call the stopSharingLocation function from location.js
-        stopSharingLocation(watchId);
-      });
+            // Generate a link with the current coordinates
+            const shareLink = `https://jphillips1833.github.io/Tracking/view_location.html?lat=${latitude}&lng=${longitude}`;
+
+            // Log the link to the console (you can copy and share this link)
+            console.log(`${shareLink}`);
+
+            let shareLinkP = document.createElement("a");
+            shareLinkP.href = shareLink;
+            document.body.appendChild(shareLinkP);
+
+            // Center the map on the shared location
+            map.setView([latitude, longitude], 13);
+
+            // Add a marker for the shared location
+            if (marker) {
+              map.removeLayer(marker);
+            }
+            marker = L.marker([latitude, longitude]).addTo(map);
+          },
+          (err) => {
+            console.error("Error getting current location:", err);
+          }
+        );
+      }
     </script>
   </body>
 </html>
