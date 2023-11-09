@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>View Shared Location</title>
+    <title>Live Location Sharing</title>
     <link
       rel="stylesheet"
       href="https://unpkg.com/leaflet@1.9.2/dist/leaflet.css"
@@ -25,6 +25,7 @@
   </head>
   <body>
     <div id="map"></div>
+    <button id="shareLocation">Share My Location</button>
 
     <script>
       const map = L.map("map").setView([0, 0], 2);
@@ -32,15 +33,30 @@
         map
       );
 
-      // Replace these coordinates with the actual shared location
-      const sharedLatitude = 0;
-      const sharedLongitude = 0;
+      let marker;
 
-      // Center the map on the shared location
-      map.setView([sharedLatitude, sharedLongitude], 13);
+      const shareLocationBtn = document.getElementById("shareLocation");
+      shareLocationBtn.addEventListener("click", shareMyLocation);
 
-      // Add a marker for the shared location
-      const marker = L.marker([sharedLatitude, sharedLongitude]).addTo(map);
+      function shareMyLocation() {
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            const { latitude, longitude } = pos.coords;
+
+            // Center the map on the shared location
+            map.setView([latitude, longitude], 13);
+
+            // Add a marker for the shared location
+            if (marker) {
+              map.removeLayer(marker);
+            }
+            marker = L.marker([latitude, longitude]).addTo(map);
+          },
+          (err) => {
+            console.error("Error getting current location:", err);
+          }
+        );
+      }
     </script>
   </body>
 </html>
