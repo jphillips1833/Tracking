@@ -32,9 +32,10 @@
         map
       );
 
-      // Replace these coordinates with the actual shared location
-      const sharedLatitude = 0;
-      const sharedLongitude = 0;
+      // Get the latitude and longitude values from the URL parameters
+      const params = new URLSearchParams(window.location.search);
+      const sharedLatitude = params.get("lat");
+      const sharedLongitude = params.get("lng");
 
       // Center the map on the shared location
       map.setView([sharedLatitude, sharedLongitude], 13);
