@@ -4,68 +4,66 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/leaflet@1.9.2/dist/leaflet.css"
-      integrity="sha256-sA+zWATbFveLLNqWO2gtiw3HL/lh1giY/Inf1BJ0z14="
-      crossorigin=""
-    />
-    <!-- Make sure you put this AFTER Leaflet's CSS -->
-    <script
-      src="https://unpkg.com/leaflet@1.9.2/dist/leaflet.js"
-      integrity="sha256-o9N1jGDZrf5tS+Ft4gbIK7mYMipq9lqpVJ91xHSyKhg="
-      crossorigin=""
-    ></script>
+    <title>Live Location Sharing</title>
     <style>
       #map {
-        height: 350px;
+        height: 400px;
       }
     </style>
   </head>
-  <body data-rsssl="1">
-    <main>
-      <div id="map"></div>
-      <button id="getOtherLocation">Get Other Person's Location</button>
-    </main>
+  <body>
+    <div id="map"></div>
+    <button id="shareLocation">Share My Location</button>
+
+    <script src="https://unpkg.com/leaflet@1.9.2/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.2/socket.io.js"></script>
     <script>
-      const map = L.map("map");
-      let marker, circle, zoomed;
+      const map = L.map("map").setView([0, 0], 2);
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(
+        map
+      );
 
-      // Initializes map
-      map.setView([51.505, -0.09], 13);
+      const socket = io();
 
-      // Sets initial coordinates and zoom level
-      L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        maxZoom: 19,
-        attribution:
-          '© <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-      }).addTo(map);
+      const shareLocationBtn = document.getElementById("shareLocation");
+      shareLocationBtn.addEventListener("click", shareMyLocation);
 
-      // Add event listener to the button
-      const getOtherLocationBtn = document.getElementById("getOtherLocation");
-      getOtherLocationBtn.addEventListener("click", getOtherPersonLocation);
+      function shareMyLocation() {
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            const { latitude, longitude } = pos.coords;
+            const location = { latitude, longitude };
 
-      function getOtherPersonLocation() {
-        // Assume you have a mechanism to get the other person's location
-        // Replace these values with the actual latitude and longitude
-        const otherLat = 51.51;
-        const otherLng = -0.1;
+            // Emit the location to the server
+            socket.emit("location", location);
 
+            // Center the map on the shared location
+            map.setView([latitude, longitude], 13);
+
+            // Add a marker for the shared location
+            if (marker) {
+              map.removeLayer(marker);
+            }
+            marker = L.marker([latitude, longitude]).addTo(map);
+          },
+          (err) => {
+            console.error("Error getting current location:", err);
+          }
+        );
+      }
+
+      let marker;
+
+      // Listen for location updates from other users
+      socket.on("location", (location) => {
+        console.log("Received location:", location);
+
+        // Update the map with the shared location
         if (marker) {
           map.removeLayer(marker);
-          map.removeLayer(circle);
         }
-
-        marker = L.marker([otherLat, otherLng]).addTo(map);
-        circle = L.circle([otherLat, otherLng], { radius: 10 }).addTo(map);
-
-        if (!zoomed) {
-          zoomed = map.fitBounds(circle.getBounds());
-        }
-
-        map.setView([otherLat, otherLng], 13);
-      }
+        marker = L.marker([location.latitude, location.longitude]).addTo(map);
+      });
     </script>
   </body>
 </html>
