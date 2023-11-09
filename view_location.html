@@ -33,6 +33,9 @@
     <div id="linkContainer"></div>
 
     <script>
+      // Call the initializeMap function from location.js
+      initializeMap();
+
       // Get the latitude and longitude values from the URL parameters
       const params = new URLSearchParams(window.location.search);
       const sharedLatitude = params.get("lat");

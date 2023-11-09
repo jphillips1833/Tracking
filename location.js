@@ -1,9 +1,12 @@
 // location.js
 
-const map = L.map("map").setView([0, 0], 2);
-L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
-
+let map;
 let marker;
+
+function initializeMap() {
+  map = L.map("map").setView([0, 0], 2);
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
+}
 
 function centerMap(latitude, longitude) {
   map.setView([latitude, longitude], 13);
@@ -17,6 +20,8 @@ function addMarker(latitude, longitude) {
 }
 
 function shareLocation() {
+  initializeMap();
+
   const watchId = navigator.geolocation.watchPosition(
     (pos) => {
       const { latitude, longitude } = pos.coords;
