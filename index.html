@@ -5,8 +5,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-  </head>
-  <body data-rsssl="1">
     <link
       rel="stylesheet"
       href="https://unpkg.com/leaflet@1.9.2/dist/leaflet.css"
@@ -24,47 +22,49 @@
         height: 350px;
       }
     </style>
+  </head>
+  <body data-rsssl="1">
     <main>
       <div id="map"></div>
+      <button id="getOtherLocation">Get Other Person's Location</button>
     </main>
     <script>
       const map = L.map("map");
+      let marker, circle, zoomed;
+
       // Initializes map
       map.setView([51.505, -0.09], 13);
+
       // Sets initial coordinates and zoom level
       L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
         maxZoom: 19,
         attribution:
           '© <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
       }).addTo(map);
-      // Sets map data source and associates with map
-      let marker, circle, zoomed;
-      navigator.geolocation.watchPosition(success, error);
-      function success(pos) {
-        const lat = pos.coords.latitude;
-        const lng = pos.coords.longitude;
-        const accuracy = pos.coords.accuracy;
+
+      // Add event listener to the button
+      const getOtherLocationBtn = document.getElementById("getOtherLocation");
+      getOtherLocationBtn.addEventListener("click", getOtherPersonLocation);
+
+      function getOtherPersonLocation() {
+        // Assume you have a mechanism to get the other person's location
+        // Replace these values with the actual latitude and longitude
+        const otherLat = 51.51;
+        const otherLng = -0.1;
+
         if (marker) {
           map.removeLayer(marker);
           map.removeLayer(circle);
         }
-        // Removes any existing marker and circule (new ones about to be set)
-        marker = L.marker([lat, lng]).addTo(map);
-        circle = L.circle([lat, lng], { radius: accuracy }).addTo(map);
-        // Adds marker to the map and a circle for accuracy
+
+        marker = L.marker([otherLat, otherLng]).addTo(map);
+        circle = L.circle([otherLat, otherLng], { radius: 10 }).addTo(map);
+
         if (!zoomed) {
           zoomed = map.fitBounds(circle.getBounds());
         }
-        // Set zoom to boundaries of accuracy circle
-        map.setView([lat, lng]);
-        // Set map focus to current user position
-      }
-      function error(err) {
-        if (err.code === 1) {
-          alert("Please allow geolocation access");
-        } else {
-          alert("Cannot get current location");
-        }
+
+        map.setView([otherLat, otherLng], 13);
       }
     </script>
   </body>
