@@ -2,7 +2,6 @@ const map = L.map("map").setView([0, 0], 2);
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
 
 let marker;
-
 const shareLocationBtn = document.getElementById("shareLocation");
 shareLocationBtn.addEventListener("click", shareMyLocation);
 
@@ -38,4 +37,21 @@ function shareMyLocation() {
       console.error("Error getting current location:", err);
     }
   );
+}
+const viewLocationBtn = document.getElementById("viewLocation");
+shareLocationBtn.addEventListener(
+  "click",
+  displayLocation(this.latitude, this.longitude)
+);
+
+function displayLocation(lat, long) {
+  map.setView([lat, long], 13);
+  if (marker) {
+    map.removeLayer(marker);
+  }
+  marker = L.marker([lat, long]).addTo(map);
+
+  (err) => {
+    console.error("Error getting current location:", err);
+  };
 }
