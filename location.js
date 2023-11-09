@@ -32,14 +32,9 @@ function shareMyLocation() {
         map.removeLayer(marker);
       }
       marker = L.marker([latitude, longitude]).addTo(map);
-      displayLocation(latitude, longitude);
     },
     (err) => {
       console.error("Error getting current location:", err);
     }
   );
 }
-const viewLocationBtn = document.getElementById("viewLocation");
-viewLocationBtn.addEventListener("click", () => {
-  displayLocation(this.latitude, this.longitude);
-});
