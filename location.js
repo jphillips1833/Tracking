@@ -32,6 +32,7 @@ function shareMyLocation() {
         map.removeLayer(marker);
       }
       marker = L.marker([latitude, longitude]).addTo(map);
+      displayLocation(latitude, longitude);
     },
     (err) => {
       console.error("Error getting current location:", err);
@@ -39,19 +40,6 @@ function shareMyLocation() {
   );
 }
 const viewLocationBtn = document.getElementById("viewLocation");
-shareLocationBtn.addEventListener(
-  "click",
-  displayLocation(this.latitude, this.longitude)
-);
-
-function displayLocation(lat, long) {
-  map.setView([lat, long], 13);
-  if (marker) {
-    map.removeLayer(marker);
-  }
-  marker = L.marker([lat, long]).addTo(map);
-
-  (err) => {
-    console.error("Error getting current location:", err);
-  };
-}
+viewLocationBtn.addEventListener("click", () => {
+  displayLocation(this.latitude, this.longitude);
+});
