@@ -51,10 +51,13 @@
             console.log(`${shareLink}`);
 
             const shareLinkA = document.createElement("a");
+            let shareLinkText = document.createElement("p");
             shareLinkA.href = shareLink;
             shareLinkA.target = "_blank"; // Opens the link in a new tab
             shareLinkA.textContent = "Click to view location";
+            shareLinkText.innerHTML = "view location";
             document.getElementById("linkContainer").appendChild(shareLinkA);
+            shareLinkA.appendChild(shareLinkText);
 
             // Center the map on the shared location
             map.setView([latitude, longitude], 13);
