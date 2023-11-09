@@ -4,15 +4,31 @@ let map;
 let marker;
 
 function initializeMap() {
-  map = L.map("map").setView([0, 0], 2);
+  // Check if the map container exists in the DOM
+  const mapContainer = document.getElementById("map");
+  if (!mapContainer) {
+    console.error("Map container not found in the DOM.");
+    return;
+  }
+
+  map = L.map(mapContainer).setView([0, 0], 2);
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
 }
 
 function centerMap(latitude, longitude) {
+  if (!map) {
+    console.error("Map not initialized.");
+    return;
+  }
   map.setView([latitude, longitude], 13);
 }
 
 function addMarker(latitude, longitude) {
+  if (!map) {
+    console.error("Map not initialized.");
+    return;
+  }
+
   if (marker) {
     map.removeLayer(marker);
   }
