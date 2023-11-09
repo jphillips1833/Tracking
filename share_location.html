@@ -26,6 +26,7 @@
   <body>
     <div id="map"></div>
     <button id="shareLocation">Share My Location</button>
+    <div id="linkContainer"></div>
 
     <script>
       const map = L.map("map").setView([0, 0], 2);
@@ -49,9 +50,11 @@
             // Log the link to the console (you can copy and share this link)
             console.log(`${shareLink}`);
 
-            let shareLinkP = document.createElement("a");
-            shareLinkP.href = shareLink;
-            document.body.appendChild(shareLinkP);
+            const shareLinkA = document.createElement("a");
+            shareLinkA.href = shareLink;
+            shareLinkA.target = "_blank"; // Opens the link in a new tab
+            shareLinkA.textContent = "Click to view location";
+            document.getElementById("linkContainer").appendChild(shareLinkA);
 
             // Center the map on the shared location
             map.setView([latitude, longitude], 13);
