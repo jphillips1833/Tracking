@@ -43,6 +43,12 @@
           (pos) => {
             const { latitude, longitude } = pos.coords;
 
+            // Generate a link with the current coordinates
+            const shareLink = `view_location.html?lat=${latitude}&lng=${longitude}`;
+
+            // Log the link to the console (you can copy and share this link)
+            console.log(`Share this link with others: ${shareLink}`);
+
             // Center the map on the shared location
             map.setView([latitude, longitude], 13);
 
